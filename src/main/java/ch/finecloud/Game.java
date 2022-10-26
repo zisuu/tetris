@@ -4,6 +4,8 @@ import tetris.gui.ActionEvent;
 import tetris.gui.Block;
 import tetris.gui.GUI;
 
+import java.util.Random;
+
 public class Game {
     private final GUI gui;
     private Block block;
@@ -23,14 +25,19 @@ public class Game {
     }
 
     private void createBlock() {
-        this.block = new Block(5,19,1);
+        int randomColor = new Random().nextInt(1,8);
+        this.block = new Block(4, 19, randomColor);
     }
 
     private void handleEvent(ActionEvent event) {
-        if (event == ActionEvent.SHIFT_LEFT) {
-            this.block.x--;
+        switch (event) {
+            case SHIFT_LEFT -> this.block.x--;
+            case SHIFT_RIGHT -> this.block.x++;
+            case SHIFT_DOWN -> this.block.y--;
+            case DROP -> this.block.y = 0;
         }
     }
+
     private void updateGUI() {
         gui.clear();
         gui.drawBlock(this.block);
