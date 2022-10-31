@@ -1,14 +1,13 @@
 package ch.finecloud;
 
 import tetris.gui.ActionEvent;
-//import tetris.gui.Block;
 import tetris.gui.GUI;
 
-//import java.util.Random;
+import static tetris.gui.ActionEvent.ROTATE_LEFT;
+import static tetris.gui.ActionEvent.ROTATE_RIGHT;
 
 public class Game {
     private final GUI gui;
-//    private Block block;
     private Figure figure;
 
     public Game(GUI gui) {
@@ -16,7 +15,6 @@ public class Game {
     }
 
     public void start(){
-//        createBlock();
         createFigure();
         updateGUI();
         while(true){
@@ -30,23 +28,16 @@ public class Game {
         this.figure = new Figure();
     }
 
-//    private void createBlock() {
-//        int randomColor = new Random().nextInt(1,8);
-//        this.block = new Block(4, 19, randomColor);
-//    }
-
     private void handleEvent(ActionEvent event) {
-//        switch (event) {
-//            case SHIFT_LEFT -> this.block.x--;
-//            case SHIFT_RIGHT -> this.block.x++;
-//            case SHIFT_DOWN -> this.block.y--;
-//            case DROP -> this.block.y = 0;
-//        }
+        if (event.equals(ROTATE_LEFT) || event.equals(ROTATE_RIGHT)) {
+            figure.rotate(event);
+        } else {
+            figure.shift(event);
+        }
     }
 
     private void updateGUI() {
         gui.clear();
         gui.drawBlocks(figure.getBlocks());
-//        gui.drawBlock(this.block);
     }
 }
