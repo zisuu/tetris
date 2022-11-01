@@ -1,20 +1,12 @@
 package ch.finecloud.tetris.model;
 
 import tetris.gui.Block;
-import java.util.Random;
 
-public class Figure {
-    private final static int COLOR = new Random().nextInt(1,8);
-    private final Block[] blocks = new Block[4];
-
-    public Figure(int x, int y) {
-        for (int i = 0; i < blocks.length; i++) {
-            this.blocks[i] = new Block(x, y -i , COLOR);
-        }
-    }
+public abstract class Figure {
+    protected final Block[] blocks = new Block[4];
 
     public Block[] getBlocks() {
-        return this.blocks;
+        return blocks;
     }
 
     public void shift(int dx, int dy) {
@@ -28,24 +20,57 @@ public class Figure {
      *  90∘ rotation counterclockwise (or 270∘ clockwise): (x,y)→(−y,x)
      * 180∘ rotation counterclockwise (or 180∘ clockwise): (x,y)→(−x,−y)
      * 270∘ rotation counterclockwise (or 90∘ clockwise): (x,y)→(y,−x)
-     * b1'(x) = b0(x) - b1(x) -> 3 - 3 = 0 change -> b0y
-     * b1'(y) = b0(y) - b1(y) -> 0 - 1 = -1 change -> b0x -1
-     * b2'(x) = b0(x) - b2(x) -> 3 - 3 = 0 change -> b0y
-     * b2'(y) = b0(y) - b2(y) -> 0 - 2 = -2 change -> b0x -2
-     * b3'(x) = b0(x) - b3(x) -> 3 - 4 = -1 change -> b0y -1
-     * b3'(y) = b0(y) - b3(y) -> 0 - 2 = -2 change -> b0x -2
      * @param direction
      */
     public void rotate(int direction) {
-        System.out.println("b1x=" + blocks[1].x);
-//        blocks[1].x = blocks[0].x;
-//        System.out.println("b1x'=" + blocks[1].x);
-        System.out.println("b1y=" + blocks[1].y);
-        blocks[1].y = blocks[0].x -1;
-        System.out.println("b1y'=" + blocks[1].y);
-//        blocks[2].x = blocks[2].y;
-//        blocks[2].y = blocks[0].y;
-//        blocks[3].x = blocks[3].y;
-//        blocks[3].y = blocks[0].y;
+        switch (direction) {
+            case 1 -> {
+                for (Block block : this.getBlocks()) {
+                    rotateBlockRight(block);
+                }
+            }
+            case -1 -> {
+                for (Block block : this.getBlocks()) {
+                    rotateBlockLeft(block);
+                }
+            }
+        }
+    }
+
+
+    private void rotateBlockRight(Block block) {
+        int move = 0;
+        if (block.x == blocks[0].x) {
+            move = blocks[0].y - block.y;
+            block.x += move * -1;
+        } else if (block.y == blocks[0].y) {
+            move = blocks[0].x - block.x;
+            block.x += move;
+        } else {
+            if ((block.x > blocks[0].x && block.y > blocks[0].y) || (block.x < blocks[0].x && block.y < blocks[0].y)) {
+                move = (blocks[0].x - block.x) * 2;
+            } else {
+                block.x += (blocks[0].y - block.y) * -2;
+            }
+        }
+        block.y += move;
+    }
+
+    private void rotateBlockLeft(Block block) {
+        int move = 0;
+        if (block.x == blocks[0].x) {
+            move = blocks[0].y - block.y;
+            block.y += move;
+        } else if (block.y == blocks[0].y) {
+            move = blocks[0].x - block.x;
+            block.y += move * -1;
+        } else {
+            if ((block.x > blocks[0].x && block.y > blocks[0].y) || (block.x < blocks[0].x && block.y < blocks[0].y)) {
+                move = (blocks[0].x - block.x) * 2;
+            } else {
+                block.y += (blocks[0].y - block.y) * 2;
+            }
+        }
+        block.x += move;
     }
 }
