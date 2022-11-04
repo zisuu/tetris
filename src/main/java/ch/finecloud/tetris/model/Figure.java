@@ -16,12 +16,6 @@ public abstract class Figure {
         }
     }
 
-    /**
-     *  90∘ rotation counterclockwise (or 270∘ clockwise): (x,y)→(−y,x)
-     * 180∘ rotation counterclockwise (or 180∘ clockwise): (x,y)→(−x,−y)
-     * 270∘ rotation counterclockwise (or 90∘ clockwise): (x,y)→(y,−x)
-     * @param direction
-     */
     public void rotate(int direction) {
         switch (direction) {
             case 1 -> {
@@ -36,7 +30,6 @@ public abstract class Figure {
             }
         }
     }
-
 
     private void rotateBlockRight(Block block) {
         int move = 0;
