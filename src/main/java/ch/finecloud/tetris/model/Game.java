@@ -2,6 +2,7 @@ package ch.finecloud.tetris.model;
 
 import ch.finecloud.tetris.model.figures.*;
 import tetris.gui.ActionEvent;
+import tetris.gui.ActionHandler;
 import tetris.gui.GUI;
 
 import java.util.Random;
@@ -21,11 +22,13 @@ public class Game {
 
     public void start(){
         createFigure();
-        while(true){
-            ActionEvent event = gui.waitEvent();
-            handleEvent(event);
-            updateGUI();
-        }
+        FigureController figureController = new FigureController(); //new
+        gui.setActionHandler(figureController); //new
+        updateGUI();
+//        while(true){
+//            ActionEvent event = gui.waitEvent();
+//            handleEvent(event);
+//        }
     }
 
     private void createFigure() {
@@ -41,21 +44,48 @@ public class Game {
             case 6 -> this.figure = new TFigure(x, y);
             case 7 -> this.figure = new ZFigure(x, y);
         }
-        updateGUI();
+//        updateGUI();
     }
 
-    private void handleEvent(ActionEvent event) {
-        switch (event) {
-            case SHIFT_LEFT -> figure.shift(-1, 0);
-            case SHIFT_RIGHT -> figure.shift(+1, 0);
-            case SHIFT_DOWN -> figure.shift(0, -1);
-            case ROTATE_RIGHT -> figure.rotate(1);
-            case ROTATE_LEFT -> figure.rotate(-1);
-        }
-    }
-
+//    private void handleEvent(ActionEvent event) {
+//        switch (event) {
+//            case SHIFT_LEFT -> figure.shift(-1, 0);
+//            case SHIFT_RIGHT -> figure.shift(+1, 0);
+//            case SHIFT_DOWN -> figure.shift(0, -1);
+//            case ROTATE_RIGHT -> figure.rotate(1);
+//            case ROTATE_LEFT -> figure.rotate(-1);
+//        }
+//    }
     private void updateGUI() {
         gui.clear();
         gui.drawBlocks(figure.getBlocks());
+    }
+
+    private class FigureController implements ActionHandler { //new
+
+        public void drop() {
+//            TODO
+        }
+        public void rotateLeft() {
+            figure.rotate(-1);
+            updateGUI();
+        }
+        public void rotateRight() {
+            figure.rotate(1);
+            updateGUI();
+        }
+        public void shiftDown(){
+            figure.shift(0, -1);
+            updateGUI();
+        }
+        public void shiftLeft() {
+            figure.shift(-1, 0);
+            updateGUI();
+        }
+        public void shiftRight() {
+            figure.shift(+1, 0);
+            updateGUI();
+        }
+
     }
 }
