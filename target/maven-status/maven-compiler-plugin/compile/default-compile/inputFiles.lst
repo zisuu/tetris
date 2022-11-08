@@ -1,5 +1,7 @@
 /Users/Dave/IdeaProjects/tetris/src/main/java/ch/finecloud/tetris/model/figures/TFigure.java
 /Users/Dave/IdeaProjects/tetris/src/main/java/ch/finecloud/tetris/model/figures/SFigure.java
+/Users/Dave/IdeaProjects/tetris/src/main/java/ch/finecloud/tetris/model/CollisionException.java
+/Users/Dave/IdeaProjects/tetris/src/main/java/ch/finecloud/tetris/model/Field.java
 /Users/Dave/IdeaProjects/tetris/src/main/java/ch/finecloud/tetris/Tetris.java
 /Users/Dave/IdeaProjects/tetris/src/main/java/ch/finecloud/tetris/model/figures/LFigure.java
 /Users/Dave/IdeaProjects/tetris/src/main/java/ch/finecloud/tetris/model/figures/IFigure.java
