@@ -1,5 +1,6 @@
 package ch.finecloud.tetris.model;
 
+import ch.finecloud.tetris.Tetris;
 import ch.finecloud.tetris.model.figures.*;
 import tetris.gui.ActionHandler;
 import tetris.gui.GUI;
@@ -24,18 +25,14 @@ public class Game {
 
     public void start(){
         createFigure();
-        FigureController figureController = new FigureController(); //new
-        gui.setActionHandler(figureController); //new
+        FigureController figureController = new FigureController();
+        gui.setActionHandler(figureController);
         updateGUI();
-//        while(true){
-//            ActionEvent event = gui.waitEvent();
-//            handleEvent(event);
-//        }
     }
 
     private void createFigure() {
-        int x = (width -1) / 2;
-        int y = (height -1);
+        int x = (Tetris.WIDTH -1) / 2;
+        int y = (Tetris.HEIGHT -1);
         int figureID = new Random().nextInt(1,8);
         switch (figureID) {
             case 1 -> this.figure = new IFigure(x, y);
@@ -46,31 +43,22 @@ public class Game {
             case 6 -> this.figure = new TFigure(x, y);
             case 7 -> this.figure = new ZFigure(x, y);
         }
-//        updateGUI();
+        updateGUI();
     }
 
-//    private void handleEvent(ActionEvent event) {
-//        switch (event) {
-//            case SHIFT_LEFT -> figure.shift(-1, 0);
-//            case SHIFT_RIGHT -> figure.shift(+1, 0);
-//            case SHIFT_DOWN -> figure.shift(0, -1);
-//            case ROTATE_RIGHT -> figure.rotate(1);
-//            case ROTATE_LEFT -> figure.rotate(-1);
-//        }
-//    }
     private void updateGUI() {
         gui.clear();
         gui.drawBlocks(figure.getBlocks());
     }
 
-    private class FigureController implements ActionHandler { //new
+    private class FigureController implements ActionHandler {
 
         public void drop() throws CollisionException {
             int lowestBlockPositionY = 0;
             // get the lowest block position, this tells us the diff from y pos to filed bottom y = 0
             for (int i = 0; i < figure.blocks.length -1; i++) {
                 lowestBlockPositionY = Math.min(figure.blocks[i].y, figure.blocks[i + 1].y);
-//                lowestBlockPositionY = figure.blocks[i].y > figure.blocks[i+1].y ? figure.blocks[i+1].y : figure.blocks[i].y;
+            // lowestBlockPositionY = figure.blocks[i].y > figure.blocks[i+1].y ? figure.blocks[i+1].y : figure.blocks[i].y;
             }
             // shift all blocks down with diff
             figure.shift(0, -lowestBlockPositionY);
@@ -80,6 +68,7 @@ public class Game {
             }
             updateGUI();
         }
+
         public void rotateLeft() throws CollisionException {
             figure.rotate(-1);
             if (field.detectCollision(figure.blocks)) {
@@ -88,6 +77,7 @@ public class Game {
             }
             updateGUI();
         }
+
         public void rotateRight()  throws CollisionException{
             figure.rotate(1);
             if (field.detectCollision(figure.blocks)) {
@@ -96,6 +86,7 @@ public class Game {
             }
             updateGUI();
         }
+
         public void shiftDown() throws CollisionException {
             figure.shift(0, -1);
             if (field.detectCollision(figure.blocks)) {
@@ -104,6 +95,7 @@ public class Game {
             }
             updateGUI();
         }
+
         public void shiftLeft() throws CollisionException {
             figure.shift(-1, 0);
             if (field.detectCollision(figure.blocks)) {
@@ -112,6 +104,7 @@ public class Game {
             }
             updateGUI();
         }
+
         public void shiftRight() throws CollisionException {
             figure.shift(+1, 0);
             if (field.detectCollision(figure.blocks)) {
