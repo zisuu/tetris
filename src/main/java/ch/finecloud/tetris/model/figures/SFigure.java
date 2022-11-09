@@ -6,7 +6,7 @@ import tetris.gui.Block;
 import java.util.Random;
 
 public class SFigure extends Figure {
-    private final static int COLOR = new Random().nextInt(1,8);
+    private final static int COLOR = 5;
 
     public SFigure(int x, int y) {
         this.blocks[0] = new Block(x, y , COLOR);

@@ -4,7 +4,6 @@ import ch.finecloud.tetris.Tetris;
 import ch.finecloud.tetris.model.figures.*;
 import tetris.gui.ActionHandler;
 import tetris.gui.GUI;
-
 import java.util.Random;
 
 public class Game {
@@ -12,63 +11,68 @@ public class Game {
     private final Field field;
     private Figure figure;
     private final GUI gui;
-    private final int width;
-    private final int height;
 
-
-    public Game(int width, int height, GUI gui) {
-        this.width = width;
-        this.height = height;
-        field = new Field(this.width, this.height);
+    public Game(GUI gui) {
         this.gui = gui;
+        field = new Field();
     }
 
-    public void start(){
+    public void start() {
         createFigure();
-        FigureController figureController = new FigureController();
-        gui.setActionHandler(figureController);
-        updateGUI();
+        gui.setActionHandler(new FigureController());
+    }
+
+    public void stop() {
+        this.figure = null;
+        gui.setActionHandler(null);
     }
 
     private void createFigure() {
         int x = (Tetris.WIDTH -1) / 2;
         int y = (Tetris.HEIGHT -1);
         int figureID = new Random().nextInt(1,8);
-        switch (figureID) {
-            case 1 -> this.figure = new IFigure(x, y);
-            case 2 -> this.figure = new JFigure(x, y);
-            case 3 -> this.figure = new LFigure(x, y);
-            case 4 -> this.figure = new OFigure(x, y);
-            case 5 -> this.figure = new SFigure(x, y);
-            case 6 -> this.figure = new TFigure(x, y);
-            case 7 -> this.figure = new ZFigure(x, y);
-        }
+        this.figure = switch (figureID) {
+            case 1 -> new IFigure(x, y);
+            case 2 -> new JFigure(x, y);
+            case 3 -> new LFigure(x, y);
+            case 4 -> new OFigure(x, y);
+            case 5 -> new SFigure(x, y);
+            case 6 -> new TFigure(x, y);
+            case 7 -> new ZFigure(x, y);
+            default -> throw new IllegalStateException("Unexpected value: " + figureID);
+        };
         updateGUI();
+    }
+
+    private void figureLanded() {
+        field.addBlocks(figure.blocks);
+//        if (field.detectCollision(figure.blocks)) {
+//            stop();
+//        } else {
+            createFigure();
+//        }
+
     }
 
     private void updateGUI() {
         gui.clear();
+        gui.drawBlocks(field.getBlocks());
         gui.drawBlocks(figure.getBlocks());
     }
 
     private class FigureController implements ActionHandler {
 
+        @Override
         public void drop() throws CollisionException {
-            int lowestBlockPositionY = 0;
-            // get the lowest block position, this tells us the diff from y pos to filed bottom y = 0
-            for (int i = 0; i < figure.blocks.length -1; i++) {
-                lowestBlockPositionY = Math.min(figure.blocks[i].y, figure.blocks[i + 1].y);
-            // lowestBlockPositionY = figure.blocks[i].y > figure.blocks[i+1].y ? figure.blocks[i+1].y : figure.blocks[i].y;
+            while (!field.detectCollision(figure.blocks)) {
+               figure.shift(0, -1);
             }
-            // shift all blocks down with diff
-            figure.shift(0, -lowestBlockPositionY);
-            if (field.detectCollision(figure.blocks)) {
-                figure.shift(0, +lowestBlockPositionY);
-                throw new CollisionException("figure reached end of field");
-            }
+            figure.shift(0, +1);
+            figureLanded();
             updateGUI();
         }
 
+        @Override
         public void rotateLeft() throws CollisionException {
             figure.rotate(-1);
             if (field.detectCollision(figure.blocks)) {
@@ -78,7 +82,8 @@ public class Game {
             updateGUI();
         }
 
-        public void rotateRight()  throws CollisionException{
+        @Override
+        public void rotateRight() throws CollisionException{
             figure.rotate(1);
             if (field.detectCollision(figure.blocks)) {
                 figure.rotate(-1);
@@ -87,15 +92,17 @@ public class Game {
             updateGUI();
         }
 
+        @Override
         public void shiftDown() throws CollisionException {
             figure.shift(0, -1);
             if (field.detectCollision(figure.blocks)) {
                 figure.shift(0, +1);
-                throw new CollisionException("figure reached bottom end of field");
+                figureLanded();
             }
             updateGUI();
         }
 
+        @Override
         public void shiftLeft() throws CollisionException {
             figure.shift(-1, 0);
             if (field.detectCollision(figure.blocks)) {
@@ -105,6 +112,7 @@ public class Game {
             updateGUI();
         }
 
+        @Override
         public void shiftRight() throws CollisionException {
             figure.shift(+1, 0);
             if (field.detectCollision(figure.blocks)) {
