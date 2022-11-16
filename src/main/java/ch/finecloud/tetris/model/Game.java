@@ -87,6 +87,7 @@ public class Game {
      */
     private void figureLanded() {
         field.addBlocks(figure.blocks);
+        field.removeFullRows();
         createFigure();
         if (field.detectCollision(figure.getBlocks())) {
             stop();

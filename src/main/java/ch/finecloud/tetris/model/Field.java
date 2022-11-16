@@ -5,6 +5,7 @@ import tetris.gui.Block;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.stream.Stream;
 
 public class Field {
 
@@ -45,4 +46,47 @@ public class Field {
         }
         return collisionDetected;
     }
+
+    /**
+     * Removes the full rows from the field.
+     *
+     * @return the number of removed rows
+     */
+    public int removeFullRows() {
+        int numberOfRemovedRows = 0;
+        for (int y = 0; y < Tetris.HEIGHT-1; y++) {
+            if (isRowFull(y)) {
+                System.out.println("Row " + y + " is full!");
+                removeRow(y);
+                numberOfRemovedRows++;
+            }
+        }
+        return numberOfRemovedRows;
+    }
+
+    /**
+     * Checks if a row is full of blocks.
+     *
+     * @param y the y-coordinate of the row
+     * @return true if the row is full, false otherwise
+     */
+    private boolean isRowFull(int y) {
+        Stream<Block> blockStream;
+        blockStream = blocks.stream().filter(block -> block.y == y);
+        return blockStream.count() == Tetris.WIDTH;
+    }
+
+    /**
+     * Removes the blocks of a row and shifts the blocks of the upper rows down.
+     *
+     * @param y the y-coordinate of the row
+     */
+    private void removeRow(int y) {
+        for (int i = 0; i < blocks.size() -1; i++) {
+            if (blocks.get(i).y == y) {
+                blocks.remove(i);
+            }
+        }
+    }
+
 }
