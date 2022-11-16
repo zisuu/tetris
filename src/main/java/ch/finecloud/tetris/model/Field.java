@@ -7,10 +7,11 @@ import java.util.Arrays;
 import java.util.List;
 
 public class Field {
+
     private final List<Block> blocks;
 
     public Field() {
-        blocks = new ArrayList<Block>();
+        blocks = new ArrayList<>();
     }
 
     public void addBlocks(Block[] blocks) {
@@ -28,7 +29,7 @@ public class Field {
     public boolean detectCollision(Block[] blocks) {
         boolean collisionDetected = false;
         for (Block block : blocks) {
-            // check if figure is our of game field
+            // check if figure is out of game field
             if (block.x < 0 || block.x >= Tetris.WIDTH) {
                 collisionDetected = true;
             } else if (block.y < 0 || block.y >= Tetris.HEIGHT) {

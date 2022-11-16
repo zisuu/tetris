@@ -6,32 +6,61 @@ import tetris.gui.ActionHandler;
 import tetris.gui.GUI;
 import java.util.Random;
 
+/**
+ * The class Game implements the Tetris game.
+ *
+ */
 public class Game {
 
-    private final Field field;
-    private Figure figure;
+    /**
+     * The graphical user interface.
+     */
     private final GUI gui;
 
+    /**
+     * The figure of the game.
+     */
+    private Figure figure;
+
+    /**
+     * The field of the game.
+     */
+    private final Field field;
+
+    /**
+     * Constructs a game with a graphical user interface.
+     *
+     * @param gui the graphical user interface
+     */
     public Game(GUI gui) {
         this.gui = gui;
         field = new Field();
     }
 
+    /**
+     * Starts the game by creating a figure and registering an action handler.
+     */
     public void start() {
         createFigure();
         gui.setActionHandler(new FigureController());
     }
 
+    /**
+     * Stops the game by clearing the latest figure and unregistering the action handler.
+     */
     public void stop() {
         this.figure = null;
         gui.setActionHandler(null);
     }
 
+    /**
+     * Creates a random figure at the top of the field.
+     */
     private void createFigure() {
         int x = (Tetris.WIDTH -1) / 2;
         int y = (Tetris.HEIGHT -1);
         int figureID = new Random().nextInt(1,8);
-        this.figure = switch (figureID) {
+        figure = switch (figureID) {
             case 1 -> new IFigure(x, y);
             case 2 -> new JFigure(x, y);
             case 3 -> new LFigure(x, y);
@@ -44,34 +73,47 @@ public class Game {
         updateGUI();
     }
 
-    private void figureLanded() {
-        field.addBlocks(figure.blocks);
-//        if (field.detectCollision(figure.blocks)) {
-//            stop();
-//        } else {
-            createFigure();
-//        }
-
-    }
-
+    /**
+     * Updates the graphical user interface according to the current state of the game.
+     */
     private void updateGUI() {
         gui.clear();
         gui.drawBlocks(field.getBlocks());
         gui.drawBlocks(figure.getBlocks());
     }
 
+    /**
+     * Lands figure in the field of the game.
+     */
+    private void figureLanded() {
+        field.addBlocks(figure.blocks);
+        createFigure();
+        if (field.detectCollision(figure.getBlocks())) {
+            stop();
+        }
+    }
+
+    /**
+     * The class FigureController is used to control the figure of the Tetris game.
+     *
+     */
     private class FigureController implements ActionHandler {
 
+        /**
+         * Drops the figure.
+         */
         @Override
-        public void drop() throws CollisionException {
-            while (!field.detectCollision(figure.blocks)) {
+        public void drop() {
+            while (!field.detectCollision(figure.getBlocks())) {
                figure.shift(0, -1);
             }
             figure.shift(0, +1);
             figureLanded();
-            updateGUI();
         }
 
+        /**
+         * Rotates the figure to the left.
+         */
         @Override
         public void rotateLeft() throws CollisionException {
             figure.rotate(-1);
@@ -82,6 +124,9 @@ public class Game {
             updateGUI();
         }
 
+        /**
+         * Rotates the figure to the right.
+         */
         @Override
         public void rotateRight() throws CollisionException{
             figure.rotate(1);
@@ -92,14 +137,18 @@ public class Game {
             updateGUI();
         }
 
+        /**
+         * Shifts the figure down.
+         */
         @Override
-        public void shiftDown() throws CollisionException {
+        public void shiftDown() {
             figure.shift(0, -1);
             if (field.detectCollision(figure.blocks)) {
                 figure.shift(0, +1);
                 figureLanded();
+            } else {
+                updateGUI();
             }
-            updateGUI();
         }
 
         @Override
