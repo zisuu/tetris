@@ -3,7 +3,6 @@ package ch.finecloud.tetris.model;
 import ch.finecloud.tetris.Tetris;
 import tetris.gui.Block;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -16,7 +15,7 @@ public class Field {
     }
 
     public void addBlocks(Block[] blocks) {
-        this.blocks.addAll(Arrays.asList(blocks));
+        this.blocks.addAll(List.of(blocks));
     }
 
     public List<Block> getBlocks() {
@@ -55,8 +54,7 @@ public class Field {
     public int removeFullRows() {
         int numberOfRemovedRows = 0;
         for (int y = 0; y < Tetris.HEIGHT-1; y++) {
-            if (isRowFull(y)) {
-                System.out.println("Row " + y + " is full!");
+            while (isRowFull(y)) {
                 removeRow(y);
                 numberOfRemovedRows++;
             }
@@ -82,11 +80,11 @@ public class Field {
      * @param y the y-coordinate of the row
      */
     private void removeRow(int y) {
-        for (int i = 0; i < blocks.size() -1; i++) {
-            if (blocks.get(i).y == y) {
-                blocks.remove(i);
+        blocks.removeIf(block -> block.y == y);
+        for (Block block:blocks) {
+            if (block.y > y) {
+                block.y = block.y-1;
             }
         }
     }
-
 }

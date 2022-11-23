@@ -28,6 +28,11 @@ public class Game {
     private final Field field;
 
     /**
+     * The scoring of the game.
+     */
+    private final Scoring scoring;
+
+    /**
      * Constructs a game with a graphical user interface.
      *
      * @param gui the graphical user interface
@@ -35,6 +40,7 @@ public class Game {
     public Game(GUI gui) {
         this.gui = gui;
         field = new Field();
+        scoring = new Scoring();
     }
 
     /**
@@ -80,6 +86,9 @@ public class Game {
         gui.clear();
         gui.drawBlocks(field.getBlocks());
         gui.drawBlocks(figure.getBlocks());
+        gui.setLevel(scoring.getLevel());
+        gui.setScore(scoring.getScore());
+        gui.setHighScore(scoring.getHighScore());
     }
 
     /**
@@ -87,7 +96,10 @@ public class Game {
      */
     private void figureLanded() {
         field.addBlocks(figure.blocks);
-        field.removeFullRows();
+        int removedRows = field.removeFullRows();
+        if (removedRows > 0) {
+            scoring.updateScore(removedRows);
+        }
         createFigure();
         if (field.detectCollision(figure.getBlocks())) {
             stop();
