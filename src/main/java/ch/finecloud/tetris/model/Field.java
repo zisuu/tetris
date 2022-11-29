@@ -53,12 +53,18 @@ public class Field {
      */
     public int removeFullRows() {
         int numberOfRemovedRows = 0;
-        for (int y = 0; y < Tetris.HEIGHT-1; y++) {
+        for (int y = Tetris.HEIGHT -1; y >= 0; y--) {
             while (isRowFull(y)) {
                 removeRow(y);
                 numberOfRemovedRows++;
             }
         }
+//        for (int y = 0; y < Tetris.HEIGHT-1; y++) {
+//            while (isRowFull(y)) {
+//                removeRow(y);
+//                numberOfRemovedRows++;
+//            }
+//        }
         return numberOfRemovedRows;
     }
 
@@ -69,6 +75,14 @@ public class Field {
      * @return true if the row is full, false otherwise
      */
     private boolean isRowFull(int y) {
+//        int numBlocks  = 0;
+//        for (Block block:blocks) {
+//            if (block.y == y) {
+//                numBlocks++;
+//            }
+//        }
+//        return numBlocks == Tetris.WIDTH;
+
         Stream<Block> blockStream;
         blockStream = blocks.stream().filter(block -> block.y == y);
         return blockStream.count() == Tetris.WIDTH;
@@ -80,11 +94,27 @@ public class Field {
      * @param y the y-coordinate of the row
      */
     private void removeRow(int y) {
+
         blocks.removeIf(block -> block.y == y);
+
+//        while (iterator.hasNext()) {
+//            Block block = iterator.next();
+//            if (block.y == y) {
+//                iterator.remove();
+//            }
+//        }
+
         for (Block block:blocks) {
-            if (block.y > y) {
-                block.y = block.y-1;
+             if (block.y > y) {
+                block.y--;
             }
         }
+
+//        blocks.removeIf(block -> block.y == y);
+//        for (Block block:blocks) {
+//            if (block.y > y) {
+//                block.y = block.y-1;
+//            }
+//        }
     }
 }

@@ -4,7 +4,7 @@ import java.io.*;
 import java.util.Scanner;
 
 public class Scoring {
-    private static final String HIGH_SCORE_FILE = "/tmp/tetris.txt";
+    private static final String HIGH_SCORE_FILE = System.getProperty("user.home") + File.separator + ".tetris.txt";
     private int highScore;
     private int removedRows;
     private static final int ROWS_PER_LEVEL = 10;
@@ -69,7 +69,7 @@ public class Scoring {
      */
     private void saveHighScore() {
         try {
-            FileWriter fileWriter = new FileWriter("/tmp/tetris.txt");
+            FileWriter fileWriter = new FileWriter(HIGH_SCORE_FILE);
             fileWriter.write(String.valueOf(score));
             fileWriter.close();
         } catch (IOException e) {
